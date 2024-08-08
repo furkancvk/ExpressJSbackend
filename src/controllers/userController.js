@@ -1,8 +1,15 @@
 const User = require('../models/userModel');
-
+const Role = require('../models/roleModel');
 exports.getAllUsers = async (req, res) => {
   try {
-    const users = await User.findAll();
+    const users = await User.findAll({
+      attributes: { exclude: ['roleId'] },
+      include: [{
+        model: Role,
+        as: 'role' ,
+        attributes: ['name']
+      }]
+    });
     res.json(users);
   } catch (error) {
     res.status(400).json({ error: error.message });
